@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validators = require('validator');
 
 const clothingItemSchema = new mongoose.Schema({
   name: {
@@ -14,9 +15,16 @@ const clothingItemSchema = new mongoose.Schema({
     enum: ["sunny", "rainy", "snowy", "cloudy"],
   },
 
-  image: {
+  imageUrl: {
     type: String,
     required: true,
+
+    validate: {
+      validator(value) {
+        return validators.isURL(value);
+      },
+      message: 'You must enter a valid URL',
+    }
   },
 
   owner: {
