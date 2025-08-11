@@ -19,5 +19,16 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_id", "_privateVar"],
+        "allowAfterThis": true,
+        "allowAfterSuper": true,
+        "enforceInMethodNames": false
+      }
+    ]
+
+  },
 };
