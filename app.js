@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const app = express();
 
 const mainRouter = require('./routes/index');
-const clothingItemsRoutes = require('./routes/clothingitems');
 const {  PORT = 3001 } = process.env;
 
 mongoose
