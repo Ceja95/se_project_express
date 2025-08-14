@@ -1,3 +1,5 @@
+const { Invalid_Data_Error, Not_Found_Error, Internal_Server_Error } = require('../utils/errors');
+
 const User = require("../models/user");
 
 const getUsers = (req, res) => {
@@ -5,7 +7,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res.status(Internal_Server_Error).send({ message: err.message });
     });
 };
 
@@ -18,9 +20,9 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError" || err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
-      } else res.status(400).send({ message: err.message });
-      return res.status(500).send({ message: err.message });
+        return res.status(Not_Found_Error).send({ message: err.message });
+      } else res.status(Invalid_Data_Error).send({ message: err.message });
+      return res.status(Internal_Server_Error).send({ message: err.message });
     });
 };
 
@@ -32,9 +34,9 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(Invalid_Data_Error).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(Internal_Server_Error).send({ message: err.message });
     });
 };
 

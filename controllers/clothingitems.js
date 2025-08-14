@@ -1,3 +1,5 @@
+const { Invalid_Data_Error, Not_Found_Error, Internal_Server_Error } = require('../utils/errors');
+
 const clothingItems = require('../models/clothingitem');
 
 const getClothingItems = (req, res) => {
@@ -5,7 +7,7 @@ const getClothingItems = (req, res) => {
   .then((items) => res.status(200).send(items))
   .catch((err) => {
     console.error(err);
-    return res.status(500).send({ message: err.message });
+    return res.status(Internal_Server_Error).send({ message: err.message });
   });
 };
 
@@ -17,9 +19,9 @@ const createClothingItem = (req, res) => {
   .catch((err) => {
     console.error(err);
     if (err.name === "ValidationError") {
-      return res.status(400).send({ message: err.message });
+      return res.status(Invalid_Data_Error).send({ message: err.message });
     }
-    return res.status(500).send({ message: err.message });
+    return res.status(Internal_Server_Error).send({ message: err.message });
   });
 };
 
@@ -32,10 +34,14 @@ const deleteClothingItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if(err.name === "CastError") {
-        return res.satatus(400).send({ message: err.message });
+        return res.satatus(Invalid_Data_Error).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(Internal_Server_Error).send({ message: err.message });
     });
 };
 
 module.exports = { getClothingItems, createClothingItem, deleteClothingItem };
+
+module.exports.createClothingItem = (req, res) => {
+   console.log(req.user._id);
+};
