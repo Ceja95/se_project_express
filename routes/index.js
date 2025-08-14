@@ -3,6 +3,6 @@ const usersRouter = require('./users');
 const clothingItemsRouter = require('./clothingitems');
 
 router.use('/users', usersRouter);
-router.use('/clothingitems', clothingItemsRouter);
+router.use('/items', clothingItemsRouter);
 
 module.exports = router;
