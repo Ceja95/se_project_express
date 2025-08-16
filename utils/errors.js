@@ -1,12 +1,15 @@
-const Invalid_Data_Error = 400;
-const Not_Found_Error = 404;
-const Internal_Server_Error = {
-  status: 500,
-  message: "An error has occurred on the server"
-};
+const BAD_REQUEST_ERROR_CODE = 400;
+const NOT_FOUND_ERROR_CODE = 404;
+const INTERNAL_SERVER_ERROR_CODE = 500;
+const CONFLICT_ERROR_CODE = 409;
+const UNAUTHORIZED_ERROR_CODE = 401;
+const FORBIDDEN_ERROR_CODE = 403;
 
 module.exports = {
-  Invalid_Data_Error,
-  Not_Found_Error,
-  Internal_Server_Error
+  BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+  CONFLICT_ERROR_CODE,
+  UNAUTHORIZED_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE
 };

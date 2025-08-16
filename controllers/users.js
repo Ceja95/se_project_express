@@ -1,7 +1,10 @@
 const {
-  Invalid_Data_Error,
-  Not_Found_Error,
-  Internal_Server_Error,
+  BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+  CONFLICT_ERROR_CODE,
+  UNAUTHORIZED_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE,
 } = require("../utils/errors");
 
 const User = require("../models/user");
@@ -11,7 +14,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 
@@ -24,11 +29,15 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(Invalid_Data_Error).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       } else if (err.name === "DocumentNotFoundError") {
-        res.status(Not_Found_Error).send({ message: err.message });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 
@@ -40,9 +49,13 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(Invalid_Data_Error).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 

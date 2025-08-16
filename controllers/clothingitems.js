@@ -1,7 +1,10 @@
 const {
-  Invalid_Data_Error,
-  Not_Found_Error,
-  Internal_Server_Error,
+  BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+  CONFLICT_ERROR_CODE,
+  UNAUTHORIZED_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE,
 } = require("../utils/errors");
 
 const clothingItems = require("../models/clothingitem");
@@ -12,7 +15,9 @@ const getClothingItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 
@@ -26,9 +31,13 @@ const createClothingItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(Invalid_Data_Error).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 
@@ -44,9 +53,13 @@ const deleteClothingItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.satatus(Invalid_Data_Error).send({ message: err.message });
+        return res
+          .satatus(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 
@@ -61,10 +74,10 @@ const addLike = (req, res) => {
     .catch((err) => {
       console.err(err);
       if (err.name === "ValidationError") {
-        return res.status(Not_Found_Error).send({ message: err.message });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
-        .status(Internal_Server_Error.status)
+        .status(INTERNAL_SERVER_ERROR_CODE)
         .send({ message: err.message });
     });
 };
@@ -80,9 +93,11 @@ const removeLike = (req, res) => {
     .catch((err) => {
       console.err(err);
       if (err.name === "CastError") {
-        return res.status(Not_Found_Error).send({ message: err.message });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
-      return res.status(Internal_Server_Error).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
 
