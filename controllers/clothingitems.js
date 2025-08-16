@@ -57,7 +57,7 @@ const addLike = (req, res) => {
       { $addToSet: { likes: req.user._id } },
       { new: true }
     )
-    .then((like) => res.status(201).send(like))
+    .then((like) => res.status(201).json(like))
     .catch((err) => {
       console.err(err);
       if (err.name === "ValidationError") {
