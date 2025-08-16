@@ -93,7 +93,3 @@ module.exports = {
   addLike,
   removeLike,
 };
-
-module.exports.createClothingItem = (req, res) => {
-  console.log(req.user._id);
-};
