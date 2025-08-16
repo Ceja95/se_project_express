@@ -1,4 +1,8 @@
-const { Invalid_Data_Error, Not_Found_Error, Internal_Server_Error } = require('../utils/errors');
+const {
+  Invalid_Data_Error,
+  Not_Found_Error,
+  Internal_Server_Error,
+} = require("../utils/errors");
 
 const User = require("../models/user");
 
@@ -19,9 +23,11 @@ const getUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError" || err.name === "DocumentNotFoundError") {
-        return res.status(Not_Found_Error).send({ message: err.message });
-      } else res.status(Invalid_Data_Error).send({ message: err.message });
+      if (err.name === "CastError") {
+        return res.status(Invalid_Data_Error).send({ message: err.message });
+      } else if (err.name === "DocumentNotFoundError") {
+        res.status(Not_Found_Error).send({ message: err.message });
+      }
       return res.status(Internal_Server_Error).send({ message: err.message });
     });
 };
