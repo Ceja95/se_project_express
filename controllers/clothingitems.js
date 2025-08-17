@@ -84,12 +84,9 @@ const addLike = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      }
       if (err.name === "ValidationError") {
         return res
-          .status(BAD_REQUEST_ERROR_CODE)
+          .status(NOT_FOUND_ERROR_CODE)
           .send({ message: err.message });
       }
       return res
@@ -114,12 +111,14 @@ const removeLike = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      }
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
           .send({ message: err.message });
       }
       return res
