@@ -33,7 +33,7 @@ const getUser = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       } else if (err.name === "DocumentNotFoundError") {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)

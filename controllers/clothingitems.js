@@ -37,7 +37,7 @@ const createClothingItem = (req, res) => {
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
-        .send({ message: err.message });
+        .send({ message: 'An error has occurred on the server.' });
     });
 };
 
@@ -84,7 +84,7 @@ const addLike = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.name === "ValidationError") {
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND_ERROR_CODE)
           .send({ message: err.message });
@@ -97,7 +97,7 @@ const addLike = (req, res) => {
 
 const removeLike = (req, res) => {
   clothingItems
-    .findOneAndDelete(
+    .findByIdAndDelete(
       req.params.itemId,
       { $pull: { likes: req.user._id } },
       { new: true }
@@ -107,11 +107,6 @@ const removeLike = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
-      }
-      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
