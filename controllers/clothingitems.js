@@ -85,8 +85,11 @@ const addLike = (req, res) => {
           .send({ message: err.message });
       }
       if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      if (err.name === "ValidationError") {
         return res
-          .status(NOT_FOUND_ERROR_CODE)
+          .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
       return res
@@ -102,11 +105,22 @@ const removeLike = (req, res) => {
       { $pull: { likes: req.user._id } },
       { new: true }
     )
-    .then((deleted) => res.status(200).send(deleted))
+    .orFail()
+    .then((deleted) => res.status(200).json(deleted))
     .catch((err) => {
-      console.err(err);
+      console.error(err);
       if (err.name === "CastError") {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: err.message });
+      }
+      if (err.name === "ValidationError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
