@@ -2,9 +2,6 @@ const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   INTERNAL_SERVER_ERROR_CODE,
-  CONFLICT_ERROR_CODE,
-  UNAUTHORIZED_ERROR_CODE,
-  FORBIDDEN_ERROR_CODE,
 } = require("../utils/errors");
 
 const clothingItems = require("../models/clothingitem");
@@ -37,7 +34,7 @@ const createClothingItem = (req, res) => {
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
-        .send({ message: 'An error has occurred on the server.' });
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -85,9 +82,7 @@ const addLike = (req, res) => {
           .send({ message: err.message });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: err.message });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
@@ -112,9 +107,7 @@ const removeLike = (req, res) => {
           .send({ message: err.message });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: err.message });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)

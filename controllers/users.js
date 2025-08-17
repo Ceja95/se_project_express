@@ -2,9 +2,6 @@ const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   INTERNAL_SERVER_ERROR_CODE,
-  CONFLICT_ERROR_CODE,
-  UNAUTHORIZED_ERROR_CODE,
-  FORBIDDEN_ERROR_CODE,
 } = require("../utils/errors");
 
 const User = require("../models/user");
@@ -32,7 +29,8 @@ const getUser = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
