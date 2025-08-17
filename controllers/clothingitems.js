@@ -87,7 +87,7 @@ const addLike = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Item not found" });
+          .send({ message: err.message });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
