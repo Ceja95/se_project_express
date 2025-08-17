@@ -11,4 +11,4 @@ The back-end project is focused on creating a server for the WTWR application. Y
 Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
 
 ### Languages Used
-In this project i sticked to JavaScript files, Express / MongoDB, and used the AirBNB ESLint.
+In this project I sticked to JavaScript file structure, Express / MongoDB, and used the AirBNB ESLint.
