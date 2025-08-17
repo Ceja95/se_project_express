@@ -73,6 +73,9 @@ const addLike = (req, res) => {
     .then((like) => res.status(201).json(like))
     .catch((err) => {
       console.err(err);
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
+      }
       if (err.name === "ValidationError") {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
