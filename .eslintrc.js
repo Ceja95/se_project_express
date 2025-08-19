@@ -20,15 +20,6 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "no-underscore-dangle": [
-      "error",
-      {
-        "allow": ["_id", "_privateVar"],
-        "allowAfterThis": true,
-        "allowAfterSuper": true,
-        "enforceInMethodNames": false
-      }
-    ]
-
+   "no-underscore-dangle": ["error", { "allow": ["_id"]}]
   },
 };
