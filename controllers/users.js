@@ -67,12 +67,17 @@ const login = (req, res) => {
 
   return User.findUserByCredentials({ email, password })
     .then((user) => {
-      res.status(200).send(user);
+      const token = isJWT.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      return res.status(200).send({ token });
     })
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.mesage });
+        return res
+          .status(UNAUTHORIZED_ERROR_CODE)
+          .send({ message: err.mesage });
       }
     });
 };
