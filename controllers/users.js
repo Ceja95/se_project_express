@@ -40,9 +40,9 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
+  User.create({ name, avatar, email, password })
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       console.error(err);
@@ -51,10 +51,30 @@ const createUser = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
+      if (err.code === 11000) {
+        return res
+          .status(CONFLICT_ERROR_CODE)
+          .send({ message: "User with this email already exists" });
+      }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
         .send({ message: "An error has occurred on the server" });
     });
 };
 
-module.exports = { getUsers, getUser, createUser };
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials({ email, password })
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.message === "Incorrect email or password") {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.mesage });
+      }
+    });
+};
+
+module.exports = { getUsers, getUser, createUser, login };
