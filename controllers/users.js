@@ -5,6 +5,7 @@ const {
 } = require("../utils/errors");
 
 const User = require("../models/user");
+const user = require("../models/user");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -43,7 +44,11 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   User.create({ name, avatar, email, password })
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      const userObj = user.toObject();
+      delete userObj.password;
+      res.status(201).send(user);
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -66,6 +71,7 @@ const login = (req, res) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials({ email, password })
+    .select("+password")
     .then((user) => {
       const token = isJWT.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
@@ -83,32 +89,32 @@ const login = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-        const { name, avatar } = req.body;
+  const { name, avatar } = req.body;
 
-       return User.findByIdAndUpdate(
-        req.user._id,
-        { name, avatar },
-        { new: true, runValidators: true }
-      )
-      .then((user) => {
-        return res.status(200).send(user);
-      })
-      .catch((err) => {
-        console.error(err);
-        if (err.name === "ValidationError") {
-          return res
-            .status(BAD_REQUEST_ERROR_CODE)
-            .send({ message: err.message });
-        }
-        if (err.name === "CastError") {
-          return res
-            .status(BAD_REQUEST_ERROR_CODE)
-            .send({ message: err.message });
-        }
+  return User.findByIdAndUpdate(
+    req.user._id,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((user) => {
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
         return res
-          .status(INTERNAL_SERVER_ERROR_CODE)
-          .send({ message: "An error has occurred on the server" });
-      });
-    };
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: "An error has occurred on the server" });
+    });
+};
 
 module.exports = { getUsers, getCurrentUser, createUser, login, updateUser };
