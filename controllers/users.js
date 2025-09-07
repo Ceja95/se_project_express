@@ -5,7 +5,6 @@ const {
 } = require("../utils/errors");
 
 const User = require("../models/user");
-const user = require("../models/user");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -54,7 +53,7 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "User creation failed due to invalid input" });
       }
       if (err.code === 11000) {
         return res
