@@ -17,8 +17,8 @@ const getUsers = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
 
   User.findById(userId)
     .orFail()
@@ -82,4 +82,33 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getUser, createUser, login };
+const updateUser = (req, res) => {
+        const { name, avatar } = req.body;
+
+       return User.findByIdAndUpdate(
+        req.user._id,
+        { name, avatar },
+        { new: true, runValidators: true }
+      )
+      .then((user) => {
+        return res.status(200).send(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (err.name === "ValidationError") {
+          return res
+            .status(BAD_REQUEST_ERROR_CODE)
+            .send({ message: err.message });
+        }
+        if (err.name === "CastError") {
+          return res
+            .status(BAD_REQUEST_ERROR_CODE)
+            .send({ message: err.message });
+        }
+        return res
+          .status(INTERNAL_SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server" });
+      });
+    };
+
+module.exports = { getUsers, getCurrentUser, createUser, login, updateUser };
