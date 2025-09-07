@@ -44,9 +44,11 @@ const deleteClothingItem = (req, res) => {
   clothingItems
     .findByIdAndDelete(itemId)
     .orFail()
-    .then((item) =>
-      res.status(200).send({ message: "Item deleted successfully", item })
-    )
+    .then((item) => {
+      if(item.owner.toString() === req.user._id) {
+        return res.status(200).send({ message: "Item deleted successfully" });
+      }
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
@@ -58,6 +60,11 @@ const deleteClothingItem = (req, res) => {
         return res
           .status(NOT_FOUND_ERROR_CODE)
           .send({ message: "Item not found" });
+      }
+      if(item.owner.toString() !== req.user._id) {
+        return res
+          .status(403)
+          .send({ message: "You can only delete your own items" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
