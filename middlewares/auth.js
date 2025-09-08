@@ -1,5 +1,5 @@
 const token = authorization.replace("Bearer ", "");
-const UNAUTHORIZED_ERROR_CODE = "./../utils/errors";
+const { UNAUTHORIZED_ERROR_CODE } = "./../utils/errors";
 
 payload = jwt.verify(token, JWT_SECRET);
 

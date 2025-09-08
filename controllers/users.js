@@ -2,6 +2,8 @@ const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   INTERNAL_SERVER_ERROR_CODE,
+  CONFLICT_ERROR_CODE,
+  UNAUTHORIZED_ERROR_CODE
 } = require("../utils/errors");
 
 const User = require("../models/user");
@@ -90,7 +92,7 @@ const login = (req, res) => {
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
 
-  return User.findByIdAndUpdate(
+  User.findByIdAndUpdate(
     req.user._id,
     { name, avatar },
     { new: true, runValidators: true }
