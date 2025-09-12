@@ -1,19 +1,23 @@
-const token = authorization.replace("Bearer ", "");
-const { UNAUTHORIZED_ERROR_CODE } = "./../utils/errors";
+const jwt = require('jsonwebtoken');
 
-payload = jwt.verify(token, JWT_SECRET);
+module.exports = (req, res, next) => {
+  const { authorization } = req.headers;
 
-const publicRoutes = [
-  { method: "POST", path: "/signin" },
-  { method: "POST", path: "/signup" },
-  { method: "GET", path: "/items" },
-];
+  if(!authorization || !authorization.startsWith("Bearer ")){
+    return res.status(401).send({ message: 'Authorization required' });
+  }
 
-try {
+  const token = authorization.replace("Bearer ", "");
+  let payload;
+
+  try{
+    payload = jwt.verify(token, "some-secert-key");
+  }
+  catch(err) {
+    return res.status(401).send({ message: 'Authorization required' });
+  }
+
   req.user = payload;
+
   next();
-} catch (err) {
-  return res
-    .status(UNAUTHORIZED_ERROR_CODE)
-    .json({ message: "Invalid or expired token" });
-}
+};

@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 
 const mainRouter = require("./routes/index");
+const { createUser, login } = require("./controllers/users");
 
 const { PORT = 3001 } = process.env;
 
@@ -14,6 +15,9 @@ mongoose
     console.log("Connected to MongoDB");
   })
   .catch(console.error);
+
+app.post("signup", createUser);
+app.post("signin", login);
 
 app.use(express.json());
 app.use(cors());
