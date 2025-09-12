@@ -63,7 +63,7 @@ const deleteClothingItem = (req, res) => {
       }
       if(item.owner.toString() !== req.user._id) {
         return res
-          .status(403)
+          .status(FORBIDDEN_ERROR_CODE)
           .send({ message: "You can only delete your own items" });
       }
       return res
