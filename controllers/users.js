@@ -46,8 +46,6 @@ const createUser = (req, res) => {
 
   User.create({ name, avatar, email, password })
     .then((user) => {
-      const userObj = user.toObject();
-      delete userObj.password;
       res.status(201).send(user);
     })
     .catch((err) => {
