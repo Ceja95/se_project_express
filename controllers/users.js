@@ -6,7 +6,9 @@ const {
   UNAUTHORIZED_ERROR_CODE,
 } = require("../utils/errors");
 
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -45,7 +47,7 @@ const createUser = (req, res) => {
 
   User.create({ name, avatar, email, password })
     .then((user) => {
-      res.status(201).send(user);
+      res.status(201).send({ name: user.name, email: user.email, avatar: user.avatar });
     })
     .catch((err) => {
       console.error(err);
@@ -66,14 +68,26 @@ const createUser = (req, res) => {
 };
 
 const login = (req, res) => {
+  console.log("login function called");
   const { email, password } = req.body;
 
    User.findUserByCredentials(email, password)
     .then((user) => {
-      return res.status(200).send(user);
+      const token = jwt.sign({ _id: user._id },"some-secret-key", { expiresIn: '7d' });
+      return res.status(200).send({ token });
     })
     .catch((err) => {
       console.error(err);
+      if(err.name === 'CastError') {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Invalid input data" });
+      }
+      if(err.name === 'ValidationError') {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Invalid input data" });
+      }
       return res
         .status(UNAUTHORIZED_ERROR_CODE)
         .send({ message: "Incorrect email or password" });
