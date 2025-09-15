@@ -23,6 +23,8 @@ app.use(cors());
 app.post("/signup", createUser);
 app.post("/signin", login);
 
+app.use(auth);
+
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {

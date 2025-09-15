@@ -9,7 +9,6 @@ const {
 } = require("../controllers/clothingitems");
 
 router.get("/", getClothingItems);
-
 router.use(auth);
 
 router.post("/", createClothingItem);
