@@ -2,6 +2,7 @@ const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   INTERNAL_SERVER_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE
 } = require("../utils/errors");
 
 const clothingItems = require("../models/clothingitem");
@@ -25,7 +26,7 @@ const createClothingItem = (req, res) => {
 
   clothingItems
     .create({ name, weather, imageUrl, owner })
-    .then((item) => res.status(201).send({ name: item.name, weather: item.weather, imageUrl: item.imageUrl, owner: item.owner }))
+    .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -49,6 +50,9 @@ const deleteClothingItem = (req, res) => {
       if(item.owner.toString() === req.user._id) {
         return res.status(200).send({ message: "Item deleted successfully" });
       }
+      return res
+        .status(FORBIDDEN_ERROR_CODE)
+        .send({ message: "You can only delete your own items" });
     })
     .catch((err) => {
       console.error(err);
@@ -61,11 +65,6 @@ const deleteClothingItem = (req, res) => {
         return res
           .status(NOT_FOUND_ERROR_CODE)
           .send({ message: "Item not found" });
-      }
-      if(item.owner.toString() !== req.user._id) {
-        return res
-          .status(FORBIDDEN_ERROR_CODE)
-          .send({ message: "You can only delete your own items" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
@@ -100,7 +99,7 @@ const addLike = (req, res) => {
 
 const removeLike = (req, res) => {
   clothingItems
-    .findByIdAndDelete(
+    .findByIdAndUpdate(
       req.params.itemId,
       { $pull: { likes: req.user._id } },
       { new: true }

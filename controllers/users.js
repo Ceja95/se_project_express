@@ -23,7 +23,7 @@ const getUsers = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
 
   User.findById(userId)
     .then((user) => res.status(200).send(user))
@@ -46,7 +46,9 @@ const getCurrentUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar, email, password})
+  bcrypt.hash(password, 10)
+    .then((hash) =>
+      User.create({ name, avatar, email, password: hash}))
     .then((user) => {
       res.status(201).send({ name: user.name, email: user.email, avatar: user.avatar});
     })
@@ -71,10 +73,14 @@ const createUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
-   User.findUserByCredentials(email, password)
+  if(!email || !password) {
+    return res.status(BAD_REQUEST_ERROR_CODE).send({ message: "The password and email fields are required" });
+  }
+
+   return User.findUserByCredentials(email, password)
     .then((user) => {
       console.log(user.id);
-      const token = jwt.sign({ _id: user.id }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       return res.status(200).send({ token });
     })
     .catch((err) => {
