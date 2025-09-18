@@ -25,10 +25,10 @@ app.post("/signin", login);
 
 app.use("/", mainRouter);
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+app.use("*", (req, res) => {
+  return res.status(NOT_FOUND_ERROR_CODE).send({ message: "Requested resource not found" });
 });
 
-app.use((req, res) => {
-  return res.status(NOT_FOUND_ERROR_CODE).send({ message: "Requested resource not found" });
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });
