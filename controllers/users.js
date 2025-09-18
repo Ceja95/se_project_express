@@ -11,22 +11,12 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR_CODE)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
 const getCurrentUser = (req, res) => {
   const userId = req.user._id;
 
   User.findById(userId)
     .then((user) => res.status(200).send(user))
+    .orFail()
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
@@ -46,11 +36,13 @@ const getCurrentUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) =>
-      User.create({ name, avatar, email, password: hash}))
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
-      res.status(201).send({ name: user.name, email: user.email, avatar: user.avatar});
+      res
+        .status(201)
+        .send({ name: user.name, email: user.email, avatar: user.avatar });
     })
     .catch((err) => {
       console.error(err);
@@ -73,24 +65,28 @@ const createUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
-  if(!email || !password) {
-    return res.status(BAD_REQUEST_ERROR_CODE).send({ message: "The password and email fields are required" });
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST_ERROR_CODE)
+      .send({ message: "The password and email fields are required" });
   }
 
-   return User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       console.log(user.id);
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
       return res.status(200).send({ token });
     })
     .catch((err) => {
       console.error(err);
-      if(err.name === 'CastError') {
+      if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: "Invalid input data" });
       }
-      if(err.name === 'ValidationError') {
+      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: "Invalid input data" });
@@ -109,6 +105,7 @@ const updateUser = (req, res) => {
     { name, avatar },
     { new: true, runValidators: true }
   )
+    .orFail()
     .then((user) => {
       return res.status(200).send(user);
     })
@@ -130,4 +127,4 @@ const updateUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getCurrentUser, createUser, login, updateUser };
+module.exports = { getCurrentUser, createUser, login, updateUser };

@@ -8,6 +8,7 @@ const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
 
 const { PORT = 3001 } = process.env;
+const { NOT_FOUND_ERROR_CODE } = require("./utils/errors");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -25,5 +26,9 @@ app.post("/signin", login);
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
+});
+
+app.use((req, res) => {
+  return res.status(NOT_FOUND_ERROR_CODE).send({ message: "Requested resource not found" });
 });
