@@ -20,7 +20,6 @@ const getClothingItems = (req, res) => {
 };
 
 const createClothingItem = (req, res) => {
-  console.log("req.user:", req.user);
   const { name, weather, imageUrl } = req.body;
   const owner  = req.user._id;
 
@@ -44,15 +43,16 @@ const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
   clothingItems
-    .findByIdAndDelete(itemId)
+    .findById(itemId)
     .orFail()
     .then((item) => {
-      if(item.owner.toString() === req.user._id) {
-        return res.status(200).send({ message: "Item deleted successfully" });
-      }
-      return res
+       if(String(item.owner) !== req.user._id){
+        return res
         .status(FORBIDDEN_ERROR_CODE)
         .send({ message: "You can only delete your own items" });
+      }
+      return item.deleteOne()
+        .then(() => res.status(200).send({ message: "Item deleted successfully" }));
     })
     .catch((err) => {
       console.error(err);
