@@ -1,3 +1,6 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
@@ -6,9 +9,7 @@ const {
   UNAUTHORIZED_ERROR_CODE,
 } = require("../utils/errors");
 
-const bcrypt = require("bcryptjs");
 const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 
 const getCurrentUser = (req, res) => {
@@ -73,7 +74,6 @@ const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user.id);
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
@@ -81,19 +81,14 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
+      if( err.message === "Invalid email or password") {
         return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid input data" });
-      }
-      if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid input data" });
+          .status(UNAUTHORIZED_ERROR_CODE)
+          .send({ message: "Incorrect email or password" });
       }
       return res
-        .status(UNAUTHORIZED_ERROR_CODE)
-        .send({ message: "Incorrect email or password" });
+        .status(INTERNAL_SERVER_ERROR_CODE)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -106,20 +101,20 @@ const updateUser = (req, res) => {
     { new: true, runValidators: true }
   )
     .orFail()
-    .then((user) => {
-      return res.status(200).send(user);
-    })
+    .then((user) =>
+     res.status(200).send(user)
+    )
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
+      if(err.name === "DocumentNotFoundError") {
         return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "User not found" });
       }
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError" || err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "User update failed due to invalid input" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
