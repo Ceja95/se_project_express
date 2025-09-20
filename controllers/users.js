@@ -16,8 +16,8 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id;
 
   User.findById(userId)
-    .then((user) => res.status(200).send(user))
     .orFail()
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
@@ -81,7 +81,7 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if( err.message === "Invalid email or password") {
+      if( err.message === "Incorrect email or password") {
         return res
           .status(UNAUTHORIZED_ERROR_CODE)
           .send({ message: "Incorrect email or password" });
