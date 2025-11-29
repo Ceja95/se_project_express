@@ -6,6 +6,7 @@ const app = express();
 
 const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
+const { errorHandling } = require("./middlewares/ErrorHandling");
 
 const { PORT = 3001 } = process.env;
 const { NOT_FOUND_ERROR_CODE } = require("./utils/errors");
@@ -28,6 +29,8 @@ app.use("/", mainRouter);
 app.use("*", (req, res) =>
  res.status(NOT_FOUND_ERROR_CODE).send({ message: "Requested resource not found" })
 );
+
+app.use(errorHandling);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

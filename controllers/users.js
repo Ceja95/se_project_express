@@ -16,8 +16,8 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id;
 
   User.findById(userId)
-    .then((user) => res.status(200).send(user))
     .orFail()
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
