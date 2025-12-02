@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.use("/", mainRouter);
 app.use("*", (req, res) =>
  res.status(NOT_FOUND_ERROR_CODE).send({ message: "Requested resource not found" })
 );
+
+app.use(errors());
 
 app.use(errorHandling);
 
