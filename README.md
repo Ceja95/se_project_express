@@ -19,3 +19,7 @@ In this project I sticked to JavaScript file structure, Express / MongoDB, and u
 
 #### Back-end domain name
 WWTWR.ignorelist.com
+
+##### Project Pitch Videos
+Check out these videos, where I describe my project & some challenges I faced while building it:
+- [JoseLaraCeja-ProjectPitch-WTWR] (https://drive.google.com/file/d/1srSBEpWQ480l4qlyUMdHwqopw-dvgMtu/view?usp=sharing)
