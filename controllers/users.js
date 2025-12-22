@@ -37,8 +37,9 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
+    const err = new Error("Email and password are required");
     console.error(err);
-    next(err);
+    return next(err);
   }
 
   return User.findUserByCredentials(email, password)
@@ -54,7 +55,7 @@ const login = (req, res, next) => {
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(

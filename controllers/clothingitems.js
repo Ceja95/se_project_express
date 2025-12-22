@@ -65,7 +65,7 @@ const addLike = (req, res, next) => {
     });
 };
 
-const removeLike = (req, res) => {
+const removeLike = (req, res, next) => {
   clothingItems
     .findByIdAndUpdate(
       req.params.itemId,

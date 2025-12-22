@@ -6,8 +6,10 @@ const {
   UNAUTHORIZED_ERROR_CODE,
 } = require("../utils/errors");
 
-module.exports.errorHandling = (err, req, res, next) => {
+module.exports.errorHandling = (err, req, res, next) => { // eslint-disable-line no-unused-vars
   console.error(err);
+  const { email, password } = req.body;
+
 
   if (!email || !password) {
     return res
@@ -56,6 +58,6 @@ module.exports.errorHandling = (err, req, res, next) => {
   }
 
   return res
-    .statuts(new INTERNAL_SERVER_ERROR_CODE())
+    .status(new INTERNAL_SERVER_ERROR_CODE())
     .send({ message: "An error has occurred on the server" });
-}
+};
