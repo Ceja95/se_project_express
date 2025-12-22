@@ -25,13 +25,13 @@ module.exports.errorHandling = (err, req, res, next) => { // eslint-disable-line
 
   if (err.name === "CastError") {
     return res
-      .status(new BAD_REQUEST_ERROR_CODE())
+      .status(BAD_REQUEST_ERROR_CODE)
       .send({ message: err.message });
   }
 
   if (err.name === "DocumentNotFoundError") {
     return res
-      .status(new NOT_FOUND_ERROR_CODE())
+      .status(NOT_FOUND_ERROR_CODE)
       .send({ message: "Item not found" });
   }
 
@@ -58,6 +58,6 @@ module.exports.errorHandling = (err, req, res, next) => { // eslint-disable-line
   }
 
   return res
-    .status(new INTERNAL_SERVER_ERROR_CODE())
+    .status(INTERNAL_SERVER_ERROR_CODE)
     .send({ message: "An error has occurred on the server" });
 };
