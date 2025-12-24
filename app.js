@@ -13,7 +13,7 @@ const { errorHandling } = require("./middlewares/ErrorHandling");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const { PORT = 3001 } = process.env;
-const { NOT_FOUND_ERROR_CODE } = require("./utils/errors");
+const { NotFoundError } = require("./utils/errors/NotFoundError");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -40,7 +40,7 @@ app.use("/", mainRouter);
 
 app.use("*", (req, res) =>
   res
-    .status(NOT_FOUND_ERROR_CODE)
+    .status(NotFoundError)
     .send({ message: "Requested resource not found" })
 );
 

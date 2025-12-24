@@ -1,6 +1,4 @@
-const {
-  FORBIDDEN_ERROR_CODE,
-} = require("../utils/errors");
+const { ForbiddenError } = require("../utils/errors/ForbiddenError")
 
 const clothingItems = require("../models/clothingitem");
 
@@ -35,7 +33,7 @@ const deleteClothingItem = (req, res, next) => {
     .then((item) => {
       if (String(item.owner) !== req.user._id) {
         return res
-          .status(FORBIDDEN_ERROR_CODE)
+          .status(ForbiddenError)
           .send({ message: "You can only delete your own items" });
       }
       return item
