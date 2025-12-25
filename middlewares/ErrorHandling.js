@@ -4,58 +4,50 @@ const { BadRequestError } = require("../utils/errors/BadRequestError");
 const { InternalServerError } = require("../utils/errors/InternalServerError");
 const { NotFoundError } = require("../utils/errors/NotFoundError");
 
-module.exports.errorHandling = (err, req, res, next) => { // eslint-disable-line no-unused-vars
-  console.error(err);
+module.exports.errorHandling = (err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res.status(statusCode).send({
+    message: statusCode === 500
+      ? "An error occurred on the server"
+      : message,
+  });
+};
+
+module.exports.errorClassifier = (err, req, res, next) => {
   const { email, password } = req.body;
 
-
   if (!email || !password) {
-    return res
-      .status(BadRequestError)
-      .send({ message: "The password and email fields are required" });
+    throw new BadRequestError("The password and email fields are required");
   }
 
   if (err.name === "ValidationError") {
-    return res
-      .status(BadRequestError)
-      .send({ message: err.message });
+    throw new BadRequestError("Invalid data provided");
   }
 
   if (err.name === "CastError") {
-    return res
-      .status(BadRequestError)
-      .send({ message: err.message });
+    throw new BadRequestError("Invalid ID format");
   }
 
   if (err.name === "DocumentNotFoundError") {
-    return res
-      .status(NotFoundError)
-      .send({ message: "Item not found" });
+    throw new NotFoundError("Requested resource not found");
   }
 
   if (err.code === 11000) {
-    return res
-      .status(ConflictError)
-      .send({ message: "User with this email already exists" });
+    throw new ConflictError("Resource already exists");
   }
 
   if (err.message === "Incorrect email or password") {
-    return res
-      .status(UnauthorizedError)
-      .send({ message: "Incorrect email or password" });
+    throw new UnauthorizedError("Incorrect email or password");
   }
 
   if (err.name === "DocumentNotFoundError") {
-    return res.status(NotFoundError).send({ message: "User not found" });
+    throw new NotFoundError("Requested resource not found");
   }
 
   if (err.name === "ValidationError" || err.name === "CastError") {
-    return res
-      .status(BadRequestError)
-      .send({ message: "User update failed due to invalid input" });
+    throw new BadRequestError("Invalid data provided");
   }
 
-  return res
-    .status(InternalServerError)
-    .send({ message: "An error has occurred on the server" });
+  throw new InternalServerError("An unexpected error occurred on the server");
 };
