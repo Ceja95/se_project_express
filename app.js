@@ -13,7 +13,7 @@ const { errorHandling } = require("./middlewares/ErrorHandling");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const { PORT = 3001 } = process.env;
-const { NotFoundError } = require("./utils/errors/NotFoundError");
+const NotFoundError = require("./utils/errors/NotFoundError");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -38,11 +38,9 @@ app.post("/signin", login);
 
 app.use("/", mainRouter);
 
-app.use("*", (req, res) =>
-  res
-    .status(NotFoundError)
-    .send({ message: "Requested resource not found" })
-);
+app.use("*", () => {
+  throw new NotFoundError("The requested resource was not found");
+});
 
 app.use(errorLogger);
 app.use(errors());
