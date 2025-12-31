@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const auth = require("../middlewares/auth");
+const validateCardBody = require("../middlewares/validation");
 const {
   getClothingItems,
   createClothingItem,
@@ -11,7 +12,7 @@ const {
 router.get("/", getClothingItems);
 router.use(auth);
 
-router.post("/", createClothingItem);
+router.post("/", validateCardBody, createClothingItem);
 router.delete("/:itemId", deleteClothingItem);
 
 router.put("/:itemId/likes", addLike);

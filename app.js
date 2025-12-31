@@ -11,9 +11,10 @@ const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
 const { errorHandling } = require("./middlewares/ErrorHandling");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const { validateUserBodyCreated } = require("./middlewares/validation");
+const { validateUserBodyLogin } = require("./middlewares/validation");
 
 const { PORT = 3001 } = process.env;
-const NotFoundError = require("./utils/errors/NotFoundError");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -33,14 +34,10 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-app.post("/signup", createUser);
-app.post("/signin", login);
+app.post("/signup", validateUserBodyCreated, createUser);
+app.post("/signin", validateUserBodyLogin, login);
 
 app.use("/", mainRouter);
-
-app.use("*", () => {
-  throw new NotFoundError("The requested resource was not found");
-});
 
 app.use(errorLogger);
 app.use(errors());
